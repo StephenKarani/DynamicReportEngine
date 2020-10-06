@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="test" name="test">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_1">
+<![CDATA[
+	SELECT * FROM agents;
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_1" dataType="varchar2" source="Q_1">
+    <element name="AGENT_CODE" dataType="varchar2" value="AGENT_CODE"/>
+    <element name="AGENT_ID" dataType="varchar2" value="AGENT_ID"/>
+    <element name="AGENT_DESCRIPTION" dataType="varchar2" value="AGENT_DESCRIPTION"/>
+    <element name="AGENT_ADDRESS_1" dataType="varchar2" value="AGENT_ADDRESS_1"/>
+    <element name="AGENT_ADDRESS_2" dataType="varchar2" value="AGENT_ADDRESS_2"/>
+    <element name="AGENT_CITY" dataType="varchar2" value="AGENT_CITY"/>
+</group>
+</dataStructure>
+</dataTemplate>
