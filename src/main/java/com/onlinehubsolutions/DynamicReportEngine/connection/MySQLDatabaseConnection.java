@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 
 public class MySQLDatabaseConnection {
 	static final String DB_DRIVER = "org.mariadb.jdbc.Driver";
-	static final String DB_URL = "jdbc:mariadb://127.0.0.1:3306/onliunca_dormans";
-	static final String DB_USER = "root";
-	static final String DB_PASS = "";
+	static final String DB_URL = "jdbc:mariadb://ao9moanwus0rjiex.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/kk0ra7njnhu03r1l";//"jdbc:mariadb://127.0.0.1:3306/onliunca_dormans";
+	static final String DB_USER = "c0jsg9nllunxsxwf";
+	static final String DB_PASS = "if3gzrawboab2qfr";
 	
 	public Connection Connection() {
 
