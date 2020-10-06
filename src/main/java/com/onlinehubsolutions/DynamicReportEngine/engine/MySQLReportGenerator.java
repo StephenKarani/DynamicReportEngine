@@ -3,6 +3,7 @@ package com.onlinehubsolutions.DynamicReportEngine.engine;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.util.Map;
 
@@ -16,8 +17,9 @@ import oracle.apps.xdo.template.RTFProcessor;
 
 public class MySQLReportGenerator implements ReportGenerator{
 	// static final String DOC_PATH = "C:\\Users\\Programmer\\Desktop\\Reports\\" ;
-	static final String DOC_PATH = "https://qahawademo.onlinehubsolutions.com/Reports/";
+	static final String DOC_PATH = "src/Reports/";
 	private String param1, param2, param3, param4, param5;
+	static final boolean ONLINE = true;
 	
 	@Override
 	public byte[] processorEngine(String reportFormat, String reportTemplate, String reportStyleFile,
@@ -28,7 +30,7 @@ public class MySQLReportGenerator implements ReportGenerator{
         	reportTemplate = DOC_PATH + reportTemplate;
         	reportStyleFile = DOC_PATH + reportStyleFile;
             reportName = DOC_PATH + reportName;
-            
+	            
             RTFProcessor rtfProcessor =
                 new RTFProcessor(reportTemplate); //input template
             rtfProcessor.setOutput(reportStyleFile); // output file
