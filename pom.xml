@@ -37,6 +37,20 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.java.util.collections</groupId>
+			<artifactId>collections</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/collections.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>oracle.apps.xdo</groupId>
+			<artifactId>xdocore</artifactId>
+			<version>5.6.0</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/xdocore.jar</systemPath>
+		</dependency>
 		<!--  <dependency>
 			<groupId>com.sun.java.util.collections</groupId>
 			<artifactId>collections</artifactId>
