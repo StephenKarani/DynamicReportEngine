@@ -51,6 +51,12 @@
 			<scope>system</scope>
 			<systemPath>${pom.basedir}/ExternalLibs/xdocore.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/mariadb-java-client-2.4.4.jar</systemPath>
+		</dependency>
 		<!--  <dependency>
 			<groupId>com.sun.java.util.collections</groupId>
 			<artifactId>collections</artifactId>
