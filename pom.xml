@@ -51,8 +51,8 @@
 			<systemPath>${project.basedir}/ExternalLibs/xdocore.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>org.mariadb.jdbc.Driver</groupId>
-			<artifactId>mariadb</artifactId>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
 			<version>2.4.4</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/ExternalLibs/mariadb-java-client-2.4.4.jar</systemPath>
