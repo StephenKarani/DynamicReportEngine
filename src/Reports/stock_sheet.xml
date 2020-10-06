@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<dataTemplate dataSourceRef="test" name="test">
+<dataTemplate dataSourceRef="stock_sheet" name="stock_sheet">
 <properties>
 <property name="xml_tag_case" value="upper"/>
 </properties>
@@ -8,20 +8,258 @@
 <lexicals>
 </lexicals>
 <dataQuery>
-<sqlStatement name="Q_1">
+<sqlStatement name="Q_DETAILED_CURRENT">
 <![CDATA[
-	SELECT * FROM agents;
+	SELECT T1.STOCK_ID,DATE_FORMAT(T1.STOCK_DATE, '%Y-%m-%d')AS STOCK_DATE, T1.STOCK_SL_STOCK_ID, T1.STOCK_ID_LET, T1.STOCK_PURCHASE_ID, T1.STOCK_LOC, T1.STOCK_BAG_MARKS, T1.STOCK_COMMENTS,
+		   T2.TYPE_DESC, T3.GRADE_NAME, T1.STOCK_LIQOUR, IFNULL(T1.STOCK_BAGS, 0) AS STOCK_BAGS, IFNULL(T1.STOCK_KGS, 0) AS STOCK_KGS, IFNULL(T1.STOCK_PRICE_50, 0) AS STOCK_PRICE_50,
+		   (SELECT  DISTINCT T4.BULK_ID
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGID,
+		   (SELECT  DISTINCT T4.BULK_DET_HB_BAGS
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGBAGS, 
+			(SELECT  DISTINCT T4.BULK_DET_HB_KGS
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGKGS,
+			IFNULL(T1.STOCK_NY_CLOSE, 0) STOCK_NY_CLOSE, T1.STOCK_NY_LET, IFNULL(T1.STOCK_DIFF, 0) AS STOCK_DIFF,
+			T6.WH_DESC AS WAREHOUSE, T7.BIN_NAME AS BIN, T8.PURCHASE_NO AS PURCHASE_NO,
+			AUCTIONVALUEFORMULAR(IFNULL(T1.STOCK_PRICE_50, 0), 1.1023, IFNULL(T1.STOCK_NY_CLOSE, 0))EXPRUCHASEDIFF,
+			FOBINGVALUEFORMULAR(IFNULL(T1.STOCK_PRICE_50, 0), IFNULL(T1.STOCK_NY_CLOSE, 0), IFNULL(T1.STOCK_FOBBING_VALUE, 0), 1.1023)PURCHASEFOB,
+			T1.STOCK_OUTTURN, 
+			(SELECT PRE_CERTIFICATION FROM PRE_PURCHASES AS T9 WHERE T9.PRE_CBKNO = T1.STOCK_CBK_NUMBER AND T9.PRE_PURCHASE_ID = T1.STOCK_PURCHASE_ID) AS STOCK_CERTIFICATION
+	  FROM STOCKS AS T1
+	  INNER JOIN TYPES AS T2 ON T1.STOCK_TYPE_CODE = T2.TYPE_CODE
+	  INNER JOIN GRADES AS T3 ON T1.STOCK_GRADE_CODE = T3.GRADE_CODE
+	  LEFT JOIN WAREHOUSE AS T6 ON T1.STOCK_WAREHOUSE_ID = T6.WH_ID
+	  LEFT JOIN BIN AS T7 ON T1.STOCK_BIN_ID = T7.BIN_ID
+	  LEFT JOIN PURCHASES AS T8 ON T1.STOCK_PURCHASE_ID = T8.PURCHASE_ID
+	  WHERE GETBAGSTOKGS(IFNULL(T1.STOCK_BAGS, 0), IFNULL(T1.STOCK_KGS, 0), 0) > 0
+	    AND DATEDIFF(DATE_FORMAT(T1.STOCK_DATE, '%Y-%m-%d'), DATE_FORMAT(NOW(), '%Y-%m-%d')) <= 6
+	  ORDER BY  T3.GRADE_NAME, T1.STOCK_DATE, T1.STOCK_ID ASC
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DETAILED_OLD">
+<![CDATA[
+SELECT T1.STOCK_ID,DATE_FORMAT(T1.STOCK_DATE, '%Y-%m-%d')AS STOCK_DATE, T1.STOCK_SL_STOCK_ID, T1.STOCK_ID_LET, T1.STOCK_PURCHASE_ID, T1.STOCK_LOC, T1.STOCK_BAG_MARKS, T1.STOCK_COMMENTS,
+		   T2.TYPE_DESC, T3.GRADE_NAME, T1.STOCK_LIQOUR, IFNULL(T1.STOCK_BAGS, 0) AS STOCK_BAGS, IFNULL(T1.STOCK_KGS, 0) AS STOCK_KGS, IFNULL(T1.STOCK_PRICE_50, 0) AS STOCK_PRICE_50,
+		   (SELECT  DISTINCT T4.BULK_ID
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGID,
+		   (SELECT  DISTINCT T4.BULK_DET_HB_BAGS
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGBAGS, 
+			(SELECT  DISTINCT T4.BULK_DET_HB_KGS
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGKGS,
+			IFNULL(T1.STOCK_NY_CLOSE, 0) STOCK_NY_CLOSE, T1.STOCK_NY_LET, IFNULL(T1.STOCK_DIFF, 0) AS STOCK_DIFF,
+			T6.WH_DESC AS WAREHOUSE, T7.BIN_NAME AS BIN, T8.PURCHASE_NO AS PURCHASE_NO,
+			AUCTIONVALUEFORMULAR(IFNULL(T1.STOCK_PRICE_50, 0), 1.1023, IFNULL(T1.STOCK_NY_CLOSE, 0))EXPRUCHASEDIFF,
+			FOBINGVALUEFORMULAR(IFNULL(T1.STOCK_PRICE_50, 0), IFNULL(T1.STOCK_NY_CLOSE, 0), IFNULL(T1.STOCK_FOBBING_VALUE, 0), 1.1023)PURCHASEFOB,
+			T1.STOCK_OUTTURN, 
+			(SELECT PRE_CERTIFICATION FROM PRE_PURCHASES AS T9 WHERE T9.PRE_CBKNO = T1.STOCK_CBK_NUMBER AND T9.PRE_PURCHASE_ID = T1.STOCK_PURCHASE_ID) AS STOCK_CERTIFICATION
+	  FROM STOCKS AS T1
+	  INNER JOIN TYPES AS T2 ON T1.STOCK_TYPE_CODE = T2.TYPE_CODE
+	  INNER JOIN GRADES AS T3 ON T1.STOCK_GRADE_CODE = T3.GRADE_CODE
+	  LEFT JOIN WAREHOUSE AS T6 ON T1.STOCK_WAREHOUSE_ID = T6.WH_ID
+	  LEFT JOIN BIN AS T7 ON T1.STOCK_BIN_ID = T7.BIN_ID
+	  LEFT JOIN PURCHASES AS T8 ON T1.STOCK_PURCHASE_ID = T8.PURCHASE_ID
+	  WHERE GETBAGSTOKGS(IFNULL(T1.STOCK_BAGS, 0), IFNULL(T1.STOCK_KGS, 0), 0) > 0
+	    AND DATEDIFF(DATE_FORMAT(T1.STOCK_DATE, '%Y-%m-%d'), DATE_FORMAT(NOW(), '%Y-%m-%d')) > 6
+	  ORDER BY  T3.GRADE_NAME, T1.STOCK_DATE, T1.STOCK_ID ASC
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DETAILED_REJECTS">
+<![CDATA[
+SELECT T1.STOCK_ID,DATE_FORMAT(T1.STOCK_DATE, '%Y-%m-%d')AS STOCK_DATE, T1.STOCK_SL_STOCK_ID, T1.STOCK_ID_LET, T1.STOCK_PURCHASE_ID, T1.STOCK_LOC, T1.STOCK_BAG_MARKS, T1.STOCK_COMMENTS,
+		   T2.TYPE_DESC, T3.GRADE_NAME, T1.STOCK_LIQOUR, IFNULL(T1.STOCK_BAGS, 0) AS STOCK_BAGS, IFNULL(T1.STOCK_KGS, 0) AS STOCK_KGS, IFNULL(T1.STOCK_PRICE_50, 0) AS STOCK_PRICE_50,
+		   (SELECT  DISTINCT T4.BULK_ID
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGID,
+		   (SELECT  DISTINCT T4.BULK_DET_HB_BAGS
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGBAGS, 
+			(SELECT  DISTINCT T4.BULK_DET_HB_KGS
+					FROM BULK_DETAILS AS T4
+					INNER JOIN BULKS AS T5 ON T4.BULK_BULK_PK = T5.BULK_PK
+					WHERE T4.BULK_STOCK_ID = T1.STOCK_SL_STOCK_ID
+					AND T4.BULK_DET_BAG_MARKS = T1.STOCK_BAG_MARKS
+					AND T5.BULK_STOCK_COLLECTION IS NULL) 
+			AS TRADINGKGS,
+			IFNULL(T1.STOCK_NY_CLOSE, 0) STOCK_NY_CLOSE, T1.STOCK_NY_LET, IFNULL(T1.STOCK_DIFF, 0) AS STOCK_DIFF,
+			T6.WH_DESC AS WAREHOUSE, T7.BIN_NAME AS BIN, T8.PURCHASE_NO AS PURCHASE_NO,
+			AUCTIONVALUEFORMULAR(IFNULL(T1.STOCK_PRICE_50, 0), 1.1023, IFNULL(T1.STOCK_NY_CLOSE, 0))EXPRUCHASEDIFF,
+			FOBINGVALUEFORMULAR(IFNULL(T1.STOCK_PRICE_50, 0), IFNULL(T1.STOCK_NY_CLOSE, 0), IFNULL(T1.STOCK_FOBBING_VALUE, 0), 1.1023)PURCHASEFOB,
+			T1.STOCK_OUTTURN, 
+			(SELECT PRE_CERTIFICATION FROM PRE_PURCHASES AS T9 WHERE T9.PRE_CBKNO = T1.STOCK_CBK_NUMBER AND T9.PRE_PURCHASE_ID = T1.STOCK_PURCHASE_ID) AS STOCK_CERTIFICATION
+	  FROM STOCKS AS T1
+	  INNER JOIN TYPES AS T2 ON T1.STOCK_TYPE_CODE = T2.TYPE_CODE
+	  INNER JOIN GRADES AS T3 ON T1.STOCK_GRADE_CODE = T3.GRADE_CODE
+	  LEFT JOIN WAREHOUSE AS T6 ON T1.STOCK_WAREHOUSE_ID = T6.WH_ID
+	  LEFT JOIN BIN AS T7 ON T1.STOCK_BIN_ID = T7.BIN_ID
+	  LEFT JOIN PURCHASES AS T8 ON T1.STOCK_PURCHASE_ID = T8.PURCHASE_ID
+	  WHERE GETBAGSTOKGS(IFNULL(T1.STOCK_BAGS, 0), IFNULL(T1.STOCK_KGS, 0), 0) > 0
+	    AND T1.STOCK_ID_LET = 'R'
+	  ORDER BY  T3.GRADE_NAME, T1.STOCK_DATE, T1.STOCK_ID ASC
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SUMMARY">
+<![CDATA[
+	 SELECT CASE STOCK_ID_LET
+			WHEN 'C' THEN 'Stock In Collections'
+			WHEN 'K' THEN 'KKK Coffee Stock'
+			WHEN 'P' THEN 'Stock In Process'
+			WHEN 'S' THEN 'Green Coffee Stock'
+			WHEN 'R' THEN 'Rejects Coffee Stock'
+			END AS STOCK,
+			DBO.GETKGSTOBAGS(SUM(DBO.GETBAGSTOKGS(ISNULL(STOCK_BAGS,0), ISNULL(STOCK_KGS,0), 0)),0) BAGS,
+			DBO.GETREMAININGKGS(SUM(DBO.GETBAGSTOKGS(ISNULL(STOCK_BAGS,0), ISNULL(STOCK_KGS,0), 0)),0) KGS,
+			SUM((ISNULL(STOCK_PRICE_50,0) / 50) * ((60 * ISNULL(STOCK_BAGS,0)) + ISNULL(STOCK_KGS,0))) TOTALVALUE,
+			(50 * SUM((ISNULL(STOCK_PRICE_50,0) / 50) * ((60 * ISNULL(STOCK_BAGS,0)) + ISNULL(STOCK_KGS,0)))) / DBO.GETBAGSTOKGS(SUM(ISNULL(STOCK_BAGS, 0)), SUM(ISNULL(STOCK_KGS, 0)), 0) AVERAGEPRICE
+	   FROM STOCKS
+	  GROUP BY STOCK_ID_LET
+	  ORDER BY STOCK_ID_LET
+]]>
+</sqlStatement>
+<sqlStatement name="Q_SUMMARY_TOTAL">
+<![CDATA[
+	SELECT
+		GETKGSTOBAGS(SUM(GETBAGSTOKGS(IFNULL(STOCK_BAGS,0), IFNULL(STOCK_KGS,0), 0)),0) BAGS,
+		GETREMAININGKGS(SUM(GETBAGSTOKGS(IFNULL(STOCK_BAGS,0), IFNULL(STOCK_KGS,0), 0)),0) KGS,
+		SUM((IFNULL(STOCK_PRICE_50,0) / 50) * ((60 * IFNULL(STOCK_BAGS,0)) + IFNULL(STOCK_KGS,0))) TOTALVALUE,
+		(50 * SUM((IFNULL(STOCK_PRICE_50,0) / 50) * ((60 * IFNULL(STOCK_BAGS,0)) + IFNULL(STOCK_KGS,0)))) / GETBAGSTOKGS(SUM(IFNULL(STOCK_BAGS, 0)), SUM(IFNULL(STOCK_KGS, 0)), 0) AVERAGEPRICE
+	FROM STOCKS
 ]]>
 </sqlStatement>
 </dataQuery>
 <dataStructure>
-<group name="G_1" dataType="varchar2" source="Q_1">
-    <element name="AGENT_CODE" dataType="varchar2" value="AGENT_CODE"/>
-    <element name="AGENT_ID" dataType="varchar2" value="AGENT_ID"/>
-    <element name="AGENT_DESCRIPTION" dataType="varchar2" value="AGENT_DESCRIPTION"/>
-    <element name="AGENT_ADDRESS_1" dataType="varchar2" value="AGENT_ADDRESS_1"/>
-    <element name="AGENT_ADDRESS_2" dataType="varchar2" value="AGENT_ADDRESS_2"/>
-    <element name="AGENT_CITY" dataType="varchar2" value="AGENT_CITY"/>
+<group name="G_DETAILED_CURRENT" dataType="varchar2" source="Q_DETAILED_CURRENT">
+    <element name="ID" dataType="integer" value="STOCK_ID"/>
+    <element name="DATE" dataType="varchar2" value="STOCK_DATE"/>
+    <element name="STOCKID" dataType="integer" value="STOCK_SL_STOCK_ID"/>
+    <element name="STOCKLET" dataType="varchar2" value="STOCK_ID_LET"/>
+    <element name="LOCATION" dataType="varchar2" value="STOCK_LOC"/>
+    <element name="MARKS" dataType="varchar2" value="STOCK_BAG_MARKS"/>
+    <element name="COMMENTS" dataType="varchar2" value="STOCK_COMMENTS"/>
+    <element name="TYPE" dataType="varchar2" value="TYPE_DESC"/>
+    <element name="GRADE" dataType="varchar2" value="GRADE_NAME"/>
+    <element name="LIQOUR" dataType="varchar2" value="STOCK_LIQOUR"/>
+    <element name="SBAGS" dataType="integer" value="STOCK_BAGS"/>
+    <element name="SKGS" dataType="integer" value="STOCK_KGS"/>
+    <element name="PRICE" dataType="integer" value="STOCK_PRICE_50"/>
+    <element name="TID" dataType="varchar2" value="TRADINGID"/>
+    <element name="TBAGS" dataType="integer" value="TRADINGBAGS"/>
+    <element name="TKGS" dataType="integer" value="TRADINGKGS"/>
+    <element name="NYCLOSE" dataType="integer" value="STOCK_NY_CLOSE"/>
+    <element name="EXPURCDIFF" dataType="integer" value="EXPRUCHASEDIFF"/>
+    <element name="PFOB" dataType="integer" value="PURCHASEFOB"/>
+    <element name="NYLET" dataType="varchar2" value="STOCK_NY_LET"/>
+    <element name="SDIFF" dataType="varchar2" value="STOCK_DIFF"/>
+    <element name="WAREHOUSE" dataType="varchar2" value="WAREHOUSE"/>
+    <element name="BIN" dataType="varchar2" value="BIN"/>
+    <element name="PNO" dataType="varchar2" value="PURCHASE_NO"/>
+    <element name="OUTTURN" dataType="varchar2" value="STOCK_OUTTURN"/>
+    <element name="CERTIFICATION" dataType="varchar2" value="STOCK_CERTIFICATION"/>
+</group>
+<group name="G_DETAILED_OLD" dataType="varchar2" source="Q_DETAILED_OLD">
+    <element name="ID" dataType="integer" value="STOCK_ID"/>
+    <element name="DATE" dataType="varchar2" value="STOCK_DATE"/>
+    <element name="STOCKID" dataType="integer" value="STOCK_SL_STOCK_ID"/>
+    <element name="STOCKLET" dataType="varchar2" value="STOCK_ID_LET"/>
+    <element name="LOCATION" dataType="varchar2" value="STOCK_LOC"/>
+    <element name="MARKS" dataType="varchar2" value="STOCK_BAG_MARKS"/>
+    <element name="COMMENTS" dataType="varchar2" value="STOCK_COMMENTS"/>
+    <element name="TYPE" dataType="varchar2" value="TYPE_DESC"/>
+    <element name="GRADE" dataType="varchar2" value="GRADE_NAME"/>
+    <element name="LIQOUR" dataType="varchar2" value="STOCK_LIQOUR"/>
+    <element name="SBAGS" dataType="integer" value="STOCK_BAGS"/>
+    <element name="SKGS" dataType="integer" value="STOCK_KGS"/>
+    <element name="PRICE" dataType="integer" value="STOCK_PRICE_50"/>
+    <element name="TID" dataType="varchar2" value="TRADINGID"/>
+    <element name="TBAGS" dataType="integer" value="TRADINGBAGS"/>
+    <element name="TKGS" dataType="integer" value="TRADINGKGS"/>
+    <element name="NYCLOSE" dataType="integer" value="STOCK_NY_CLOSE"/>
+    <element name="EXPURCDIFF" dataType="integer" value="EXPRUCHASEDIFF"/>
+    <element name="PFOB" dataType="integer" value="PURCHASEFOB"/>
+    <element name="NYLET" dataType="varchar2" value="STOCK_NY_LET"/>
+    <element name="SDIFF" dataType="varchar2" value="STOCK_DIFF"/>
+    <element name="WAREHOUSE" dataType="varchar2" value="WAREHOUSE"/>
+    <element name="BIN" dataType="varchar2" value="BIN"/>
+    <element name="PNO" dataType="varchar2" value="PURCHASE_NO"/>
+    <element name="OUTTURN" dataType="varchar2" value="STOCK_OUTTURN"/>
+    <element name="CERTIFICATION" dataType="varchar2" value="STOCK_CERTIFICATION"/>
+</group>
+<group name="G_DETAILED_REJECTS" dataType="varchar2" source="Q_DETAILED_REJECTS">
+    <element name="ID" dataType="integer" value="STOCK_ID"/>
+    <element name="DATE" dataType="varchar2" value="STOCK_DATE"/>
+    <element name="STOCKID" dataType="integer" value="STOCK_SL_STOCK_ID"/>
+    <element name="STOCKLET" dataType="varchar2" value="STOCK_ID_LET"/>
+    <element name="LOCATION" dataType="varchar2" value="STOCK_LOC"/>
+    <element name="MARKS" dataType="varchar2" value="STOCK_BAG_MARKS"/>
+    <element name="COMMENTS" dataType="varchar2" value="STOCK_COMMENTS"/>
+    <element name="TYPE" dataType="varchar2" value="TYPE_DESC"/>
+    <element name="GRADE" dataType="varchar2" value="GRADE_NAME"/>
+    <element name="LIQOUR" dataType="varchar2" value="STOCK_LIQOUR"/>
+    <element name="SBAGS" dataType="integer" value="STOCK_BAGS"/>
+    <element name="SKGS" dataType="integer" value="STOCK_KGS"/>
+    <element name="PRICE" dataType="integer" value="STOCK_PRICE_50"/>
+    <element name="TID" dataType="varchar2" value="TRADINGID"/>
+    <element name="TBAGS" dataType="integer" value="TRADINGBAGS"/>
+    <element name="TKGS" dataType="integer" value="TRADINGKGS"/>
+    <element name="NYCLOSE" dataType="integer" value="STOCK_NY_CLOSE"/>
+    <element name="EXPURCDIFF" dataType="integer" value="EXPRUCHASEDIFF"/>
+    <element name="PFOB" dataType="integer" value="PURCHASEFOB"/>
+    <element name="NYLET" dataType="varchar2" value="STOCK_NY_LET"/>
+    <element name="SDIFF" dataType="varchar2" value="STOCK_DIFF"/>
+    <element name="WAREHOUSE" dataType="varchar2" value="WAREHOUSE"/>
+    <element name="BIN" dataType="varchar2" value="BIN"/>
+    <element name="PNO" dataType="varchar2" value="PURCHASE_NO"/>
+    <element name="OUTTURN" dataType="varchar2" value="STOCK_OUTTURN"/>
+    <element name="CERTIFICATION" dataType="varchar2" value="STOCK_CERTIFICATION"/>
+</group>
+<group name="G_SUMMARY" dataType="varchar2" source="Q_SUMMARY">
+    <element name="STOCK" dataType="varchar2" value="STOCK"/>
+    <element name="BAGS" dataType="integer" value="BAGS"/>
+    <element name="KGS" dataType="integer" value="KGS"/>
+    <element name="TOTALVALUE" dataType="integer" value="TOTALVALUE"/>
+    <element name="AVERAGEPRICE" dataType="integer" value="AVERAGEPRICE"/>
+</group>
+<group name="G_SUMMARY_TOTAL" dataType="varchar2" source="Q_SUMMARY_TOTAL">
+    <element name="BAGS" dataType="integer" value="BAGS"/>
+    <element name="KGS" dataType="integer" value="KGS"/>
+    <element name="TOTALVALUE" dataType="integer" value="TOTALVALUE"/>
+    <element name="AVERAGEPRICE" dataType="integer" value="AVERAGEPRICE"/>
 </group>
 </dataStructure>
 </dataTemplate>
