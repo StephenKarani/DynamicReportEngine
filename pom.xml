@@ -62,6 +62,41 @@
 			<scope>system</scope>
 			<systemPath>${pom.basedir}/ExternalLibs/xmlparserv2.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>oracle.apps.fnd.common</groupId>
+			<artifactId>versioninfo</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/versioninfo.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons.collections</groupId>
+			<artifactId>commons-collections-2.1</artifactId>
+			<version>2.1</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/commons-collections-2.1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>oracle.apps.fnd.i18n</groupId>
+			<artifactId>i18nAPI_v3</artifactId>
+			<version>3.0</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/i18nAPI_v3.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>oracle.bali.share</groupId>
+			<artifactId>share</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/share.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>oracle.xdo.parser.v2</groupId>
+			<artifactId>xdoparser</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/ExternalLibs/xdoparser.jar</systemPath>
+		</dependency>
 		<!--  <dependency>
 			<groupId>com.sun.java.util.collections</groupId>
 			<artifactId>collections</artifactId>
