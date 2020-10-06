@@ -44,7 +44,7 @@
 			<systemPath>${project.basedir}/ExternalLibs/collections.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>oracle.apps.xdo.dataengine</groupId>
+			<groupId>oracle.xdo</groupId>
 			<artifactId>xdocore</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
