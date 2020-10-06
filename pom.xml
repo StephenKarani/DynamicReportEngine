@@ -37,6 +37,20 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.sun.java.util.collections</groupId>
+			<artifactId>collections</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/ExternalLibs/collections.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>oracle.apps.xdo.dataengine</groupId>
+			<artifactId>xdocore</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/ExternalLibs/xdocore.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
