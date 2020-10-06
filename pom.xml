@@ -41,56 +41,56 @@
 			<artifactId>collections</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/collections.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/collections.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons.collections</groupId>
 			<artifactId>commons-collections-2.1</artifactId>
 			<version>2.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/commons-collections-2.1.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/commons-collections-2.1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>oracle.apps.fnd.i18n</groupId>
 			<artifactId>i18nAPI_v3</artifactId>
 			<version>3.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/i18nAPI_v3.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/i18nAPI_v3.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>oracle.bali.share</groupId>
 			<artifactId>share</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/share.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/share.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>oracle.apps.fnd.common</groupId>
 			<artifactId>versioninfo</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/versioninfo.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/versioninfo.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>oracle.xdo</groupId>
 			<artifactId>xdoparser</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/xdoparser.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/xdoparser.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>oracle.apps.xdo</groupId>
 			<artifactId>xdocore</artifactId>
 			<version>5.6.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/xdocore.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/xdocore.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>oracle.xml</groupId>
 			<artifactId>xmlparserv2</artifactId>
 			<version>2.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/ExternalLibs/xmlparserv2.jar</systemPath>
+			<systemPath>${basedir}/ExternalLibs/xmlparserv2.jar</systemPath>
 		</dependency>
 		<dependency>
 		    <groupId>org.mariadb.jdbc</groupId>
