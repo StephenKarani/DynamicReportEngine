@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="forward_sales" name="forward_sales">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+	
+  SELECT IFNULL(CONT_TYPE_CODE, -1) AS TYPECODE, IFNULL(TYPE_DESC, 'No Type') AS COFFEETYPE, SUM(IFNULL(CONT_BAGS_REQ,0)) AS FBAGS, 0 FKGS, SUM(GETBAGTOTALVALUE(IFNULL(CONT_PRICE_50,0), IFNULL(CONT_BAGS_REQ,0), 0)) FTOTALVALUE
+    FROM contracts
+    LEFT JOIN types ON types.TYPE_CODE = contracts.CONT_TYPE_CODE
+   WHERE IFNULL(CONT_STATUS,'') <> 'Shipped'
+   GROUP BY CONT_TYPE_CODE, TYPE_DESC
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DETAIL">
+<![CDATA[
+SELECT CONT_TYPE_CODE, IFNULL(TYPE_DESC, 'No Type') AS TYPE,
+		   IFNULL(CONT_BAGS_REQ,0) AS CBAGS, 0 CKGS,
+		   CONT_ID AS CONTRACT, CONT_CLIENT_CODE, IFNULL(CLIENT_DESCRIPTION, 'Not Selected') AS CUSTOMER, IFNULL(CONT_PRICE_50,0) AS PRICE, DATE_FORMAT(CONT_SHIP_1, '%Y-%m-%d') AS EARLIEST, DATE_FORMAT(CONT_SHIP_2, '%Y-%m-%d') AS LATEST, DATE_FORMAT(CONT_DATE, '%Y-%m-%d') AS CONTRACTDATE, CONT_DESTINATION AS DESTINATION, 
+		   CONT_STATUS AS STATUS
+	  FROM contracts
+	  LEFT JOIN types ON types.TYPE_CODE = contracts.CONT_TYPE_CODE
+	  LEFT JOIN clients ON clients.CLIENT_CODE = contracts.CONT_CLIENT_CODE
+	  WHERE IFNULL(CONT_STATUS,'') <> 'Shipped'
+		AND IFNULL(CONT_TYPE_CODE, -1) = :TYPECODE
+	  ORDER BY TYPE_DESC
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_MAIN" dataType="varchar2" source="Q_MAIN">
+    <element name="TYPECODE" dataType="integer" value="TYPECODE"/>
+    <element name="COFFEETYPE" dataType="varchar2" value="COFFEETYPE"/>
+    <element name="FBAGS" dataType="integer" value="FBAGS"/>
+    <element name="FKGS" dataType="integer" value="FKGS"/>
+    <element name="FTOTALVALUE" dataType="integer" value="FTOTALVALUE"/>
+	
+	<group name="G_DETAIL" dataType="varchar2" source="Q_DETAIL">
+		<element name="TYPE" dataType="varchar2" value="TYPE"/>
+		<element name="CBAGS" dataType="integer" value="CBAGS"/>
+		<element name="CKGS" dataType="integer" value="CKGS"/>
+		<element name="CONTRACT" dataType="varchar2" value="CONTRACT"/>
+		<element name="CONT_CLIENT_CODE" dataType="varchar2" value="CONT_CLIENT_CODE"/>
+		<element name="CUSTOMER" dataType="varchar2" value="CUSTOMER"/>
+		<element name="PRICE" dataType="integer" value="PRICE"/>
+		<element name="EARLIEST" dataType="varchar2" value="EARLIEST"/>
+		<element name="LATEST" dataType="varchar2" value="LATEST"/>
+		<element name="CONTRACTDATE" dataType="varchar2" value="CONTRACTDATE"/>
+		<element name="DESTINATION" dataType="varchar2" value="DESTINATION"/>
+		<element name="STATUS" dataType="varchar2" value="STATUS"/>
+	</group>
+</group>
+</dataStructure>
+</dataTemplate>
