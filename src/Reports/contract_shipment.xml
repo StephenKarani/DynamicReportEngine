@@ -29,6 +29,7 @@
     <element name="CLIENT_DESCRIPTION" dataType="varchar2" value="CLIENT_DESCRIPTION"/>
     <element name="CONT_BAGS_REQ" dataType="varchar2" value="CONT_BAGS_REQ"/>
 	<element name="CONT_PRICE_50" dataType="varchar2" value="CONT_PRICE_50"/>
+	<element name="CONT_SHIP_1" dataType="varchar2" value="CONT_SHIP_1"/>
 	<element name="CONT_SHIP_2" dataType="varchar2" value="CONT_SHIP_2"/>
 	<element name="CONT_DESTINATION" dataType="varchar2" value="CONT_DESTINATION"/>
 	<element name="CONT_COMMISSION" dataType="varchar2" value="CONT_COMMISSION"/>
