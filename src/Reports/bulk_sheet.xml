@@ -19,7 +19,7 @@
 </sqlStatement>
 <sqlStatement name="Q_BULK_DETAILS">
 <![CDATA[
-	SELECT BULK_STOCK_ID LOTNO, GRADE_NAME AS GRADE, TYPE_DESC AS TYPE, BULK_DET_HB_BAGS AS BAGS, BULK_DET_HB_KGS AS KGS, 
+	SELECT BULK_STOCK_ID, GRADE_NAME AS GRADE, TYPE_DESC AS TYPE, BULK_DET_HB_BAGS AS BAGS, BULK_DET_HB_KGS AS KGS, 
 		  BULK_DET_BAG_MARKS AS MARKS, BULK_DET_LIQOUR AS CUPPING, BULK_DET_COMMENTS AS COMMENTS, BULK_DET_PRICE_50 AS PRICE, 
 		  (BULK_DET_PRICE_50 / 50) * ((60 * BULK_DET_BULK_BAGS) + BULK_DET_BULK_KGS) AS VALUE, BULK_DET_NY_CLOSE AS NYCLOSE
 	 FROM bulk_details 
@@ -43,7 +43,7 @@
 	<element name="BULK_BULK_NY_CLOSE" dataType="integer" value="BULK_BULK_NY_CLOSE"/>
 	
 	<group name="G_BULK_DETAILS" dataType="varchar2" source="Q_BULK_DETAILS">
-		<element name="LOTNO" dataType="varchar2" value="LOTNO"/>
+		<element name="LOTNO" dataType="varchar2" value="BULK_STOCK_ID"/>
 		<element name="GRADE" dataType="varchar2" value="GRADE"/>
 		<element name="TYPE" dataType="varchar2" value="TYPE"/>
 		<element name="BAGS" dataType="integer" value="BAGS"/>
