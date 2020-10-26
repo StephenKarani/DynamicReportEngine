@@ -19,9 +19,9 @@
 </sqlStatement>
 <sqlStatement name="Q_BULK_DETAILS">
 <![CDATA[
-	SELECT BULK_STOCK_ID, GRADE_NAME AS GRADE, TYPE_DESC AS TYPE, BULK_DET_HB_BAGS AS BAGS, BULK_DET_HB_KGS AS KGS, 
-		  BULK_DET_BAG_MARKS AS MARKS, BULK_DET_LIQOUR AS CUPPING, BULK_DET_COMMENTS AS COMMENTS, BULK_DET_PRICE_50 AS PRICE, 
-		  (BULK_DET_PRICE_50 / 50) * ((60 * BULK_DET_BULK_BAGS) + BULK_DET_BULK_KGS) AS VALUE, BULK_DET_NY_CLOSE AS NYCLOSE
+	SELECT BULK_STOCK_ID, GRADE_NAME, TYPE_DESC, BULK_DET_HB_BAGS, BULK_DET_HB_KGS, 
+		  BULK_DET_BAG_MARKS, BULK_DET_LIQOUR, BULK_DET_COMMENTS, BULK_DET_PRICE_50, 
+		  (BULK_DET_PRICE_50 / 50) * ((60 * BULK_DET_BULK_BAGS) + BULK_DET_BULK_KGS) AS VALUE, BULK_DET_NY_CLOSE
 	 FROM bulk_details 
 	 LEFT JOIN types ON bulk_details.BULK_DET_TYPE_CODE = types.TYPE_CODE
 	 LEFT JOIN grades ON bulk_details.BULK_DET_GRADE_CODE = grades.GRADE_CODE
@@ -44,16 +44,16 @@
 	
 	<group name="G_BULK_DETAILS" dataType="varchar2" source="Q_BULK_DETAILS">
 		<element name="LOTNO" dataType="varchar2" value="BULK_STOCK_ID"/>
-		<element name="GRADE" dataType="varchar2" value="GRADE"/>
-		<element name="TYPE" dataType="varchar2" value="TYPE"/>
-		<element name="BAGS" dataType="integer" value="BAGS"/>
-		<element name="KGS" dataType="integer" value="KGS"/>
-		<element name="MARKS" dataType="varchar2" value="MARKS"/>
-		<element name="CUPPING" dataType="varchar2" value="CUPPING"/>
-		<element name="COMMENTS" dataType="varchar2" value="COMMENTS"/>
-		<element name="PRICE" dataType="integer" value="PRICE"/>
+		<element name="GRADE" dataType="varchar2" value="GRADE_NAME"/>
+		<element name="TYPE" dataType="varchar2" value="TYPE_DESC"/>
+		<element name="BAGS" dataType="integer" value="BULK_DET_HB_BAGS"/>
+		<element name="KGS" dataType="integer" value="BULK_DET_HB_KGS"/>
+		<element name="MARKS" dataType="varchar2" value="BULK_DET_BAG_MARKS"/>
+		<element name="CUPPING" dataType="varchar2" value="BULK_DET_LIQOUR"/>
+		<element name="COMMENTS" dataType="varchar2" value="BULK_DET_COMMENTS"/>
+		<element name="PRICE" dataType="integer" value="BULK_DET_PRICE_50"/>
 		<element name="VALUE" dataType="integer" value="VALUE"/>
-		<element name="NYCLOSE" dataType="integer" value="NYCLOSE"/>
+		<element name="NYCLOSE" dataType="integer" value="BULK_DET_NY_CLOSE"/>
 	</group>
 </group>
 </dataStructure>
