@@ -36,6 +36,7 @@
 	<element name="CONT_AGENT" dataType="varchar2" value="CONT_AGENT"/>
 	<element name="CONT_DELIVER_BAGS" dataType="varchar2" value="CONT_DELIVER_BAGS"/>
 	<element name="CONT_DELIVER_KGS" dataType="varchar2" value="CONT_DELIVER_KGS"/>
+	<element name="VALUE" dataType="varchar2" value="TOTALVALUE"/>
 </group>
 </dataStructure>
 </dataTemplate>
