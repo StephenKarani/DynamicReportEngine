@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="contract_shipment" name="contract_shipment">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+<parameter name="PARAM_1" dataType="character"/>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_CONTRACT_SHIPMENT">
+<![CDATA[
+	SELECT CONT_ID, CONT_DATE, CONT_CLIENT_REFERENCE, IFNULL(CONT_BAGS_REQ, 0) CONT_BAGS_REQ, IFNULL(CONT_PRICE_50, 0) CONT_PRICE_50, CONT_SHIP_1, CONT_SHIP_2,
+           CONT_DESTINATION, IFNULL(CONT_COMMISSION, 0) CONT_COMMISSION, AGENT_DESCRIPTION, CLIENT_DESCRIPTION, IFNULL(CONT_DELIVER_BAGS, 0) CONT_DELIVER_BAGS,
+           IFNULL(CONT_DELIVER_KGS, 0) CONT_DELIVER_KGS
+	  FROM contracts
+	LEFT JOIN clients ON contracts.cont_client_code = clients.client_code
+	LEFT JOIN agents ON contracts.cont_agent_code = agents.agent_code
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_CONTRACT_SHIPMENT" dataType="varchar2" source="Q_CONTRACT_SHIPMENT">
+    <element name="CONT_ID" dataType="varchar2" value="CONT_ID"/>
+    <element name="CONT_DATE" dataType="varchar2" value="CONT_DATE"/>
+    <element name="CONT_CLIENT_REFERENCE" dataType="varchar2" value="CONT_CLIENT_REFERENCE"/>
+    <element name="AGENT_DESCRIPTION" dataType="varchar2" value="AGENT_DESCRIPTION"/>
+    <element name="CLIENT_DESCRIPTION" dataType="varchar2" value="CLIENT_DESCRIPTION"/>
+    <element name="CONT_BAGS_REQ" dataType="varchar2" value="CONT_BAGS_REQ"/>
+	<element name="CONT_PRICE_50" dataType="varchar2" value="CONT_PRICE_50"/>
+	<element name="CONT_SHIP_2" dataType="varchar2" value="CONT_SHIP_2"/>
+	<element name="CONT_DESTINATION" dataType="varchar2" value="CONT_DESTINATION"/>
+	<element name="CONT_COMMISSION" dataType="varchar2" value="CONT_COMMISSION"/>
+	<element name="CONT_AGENT" dataType="varchar2" value="CONT_AGENT"/>
+	<element name="CONT_DELIVER_BAGS" dataType="varchar2" value="CONT_DELIVER_BAGS"/>
+	<element name="CONT_DELIVER_KGS" dataType="varchar2" value="CONT_DELIVER_KGS"/>
+</group>
+</dataStructure>
+</dataTemplate>
