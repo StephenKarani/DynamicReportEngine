@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="allocation_bulking_sheet" name="allocation_bulking_sheet">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+	<parameter name="PARAM_1" dataType="character"/>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_BULK">
+<![CDATA[
+	SELECT BULK_PK, BULK_ID, BULK_DATE_INSTRUCT, (BULK_BULK_TOTAL_BAGS - CAST(CONCAT('0.', BULK_HB_KGS) AS DECIMAL(23,2)))BULK_BULK_TOTAL_BAGS, BULK_HB_KGS, BULK_BULK_AVE_NYCLOSE, BULK_BULK_AVE_PRICE, BULK_ORIGINAL_TOTAL_VALUE, 
+((BULK_BULK_AVE_PRICE / 1.1023) - BULK_BULK_NY_CLOSE) AS DIFF, BULK_BULK_NY_CLOSE, BULK_BAG_MARKS, BULK_STOCK_COLLECTION
+      FROM bulks
+     WHERE BULK_ID = :PARAM_1
+]]>
+</sqlStatement>
+<sqlStatement name="Q_BULK_DETAILS">
+<![CDATA[
+	SELECT CONCAT(BULK_STOCK_ID_LET, ' ', BULK_STOCK_ID) AS LOTNO, GRADE_NAME AS GRADE, TYPE_DESC AS TYPE, BULK_DET_HB_BAGS AS BAGS, BULK_DET_HB_KGS AS KGS, 
+		  BULK_DET_BAG_MARKS AS MARKS, BULK_DET_LIQOUR AS CUPPING, BULK_DET_COMMENTS AS COMMENTS, BULK_DET_PRICE_50 AS PRICE, 
+		  (BULK_DET_PRICE_50 / 50) * ((60 * BULK_DET_BULK_BAGS) + BULK_DET_BULK_KGS) AS VALUE, BULK_DET_NY_CLOSE AS NYCLOSE,
+		  (SELECT STOCK_CBK_NUMBER FROM stocks WHERE STOCK_SL_STOCK_ID = BULK_STOCK_ID LIMIT 1) AS CBK,
+		  CASE BULK_STOCK_ID_LET
+		  WHEN 'S' THEN (SELECT PURCHASE_NO FROM stocks LEFT JOIN purchases ON STOCK_PURCHASE_ID = PURCHASE_ID WHERE STOCK_SL_STOCK_ID = BULK_STOCK_ID)
+		  ELSE ''
+		  END AS SALE
+	 FROM bulk_details 
+	 LEFT JOIN types ON bulk_details.BULK_DET_TYPE_CODE = types.TYPE_CODE
+	 LEFT JOIN grades ON bulk_details.BULK_DET_GRADE_CODE = grades.GRADE_CODE
+	 WHERE BULK_BULK_PK = :BULK_PK
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_BULK" dataType="varchar2" source="Q_BULK">
+	<element name="BULK_PK" dataType="integer" value="BULK_PK"/>
+	<element name="BULKNO" dataType="varchar2" value="BULK_ID"/>
+	<element name="DATE" dataType="varchar2" value="BULK_DATE_INSTRUCT"/>
+	<element name="BAGMARKS" dataType="varchar2" value="BULK_BAG_MARKS"/>
+	<element name="COLLECTION" dataType="varchar2" value="BULK_STOCK_COLLECTION"/>
+	<element name="BULK_HB_KGS" dataType="integer" value="BULK_HB_KGS"/>
+	<element name="BULK_BULK_TOTAL_BAGS" dataType="integer" value="BULK_BULK_TOTAL_BAGS"/>
+	<element name="BULK_BULK_AVE_NYCLOSE" dataType="integer" value="BULK_BULK_AVE_NYCLOSE"/>
+	<element name="BULK_BULK_AVE_PRICE" dataType="integer" value="BULK_BULK_AVE_PRICE"/>
+	<element name="BULK_BULK_TOTAL_VALUE" dataType="integer" value="BULK_ORIGINAL_TOTAL_VALUE"/>
+	<element name="DIFF" dataType="integer" value="DIFF"/>
+	<element name="BULK_BULK_NY_CLOSE" dataType="integer" value="BULK_BULK_NY_CLOSE"/>
+	
+	<group name="G_BULK_DETAILS" dataType="varchar2" source="Q_BULK_DETAILS">
+		<element name="LOTNO" dataType="varchar2" value="LOTNO"/>
+		<element name="GRADE" dataType="varchar2" value="GRADE"/>
+		<element name="SALE" dataType="varchar2" value="SALE"/>
+		<element name="CBK" dataType="varchar2" value="CBK"/>
+		<element name="TYPE" dataType="varchar2" value="TYPE"/>
+		<element name="BAGS" dataType="integer" value="BAGS"/>
+		<element name="KGS" dataType="integer" value="KGS"/>
+		<element name="MARKS" dataType="varchar2" value="MARKS"/>
+		<element name="CUPPING" dataType="varchar2" value="CUPPING"/>
+		<element name="COMMENTS" dataType="varchar2" value="COMMENTS"/>
+		<element name="PRICE" dataType="integer" value="PRICE"/>
+		<element name="VALUE" dataType="integer" value="VALUE"/>
+		<element name="NYCLOSE" dataType="integer" value="NYCLOSE"/>
+	</group>
+</group>
+</dataStructure>
+</dataTemplate>
