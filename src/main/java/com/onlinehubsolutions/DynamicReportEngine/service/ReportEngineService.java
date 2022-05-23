@@ -12,7 +12,7 @@ public class ReportEngineService {
 	private final ReportEngineDao reportEngineDao;
 	
 	@Autowired
-	public ReportEngineService(@Qualifier("sqlDao") ReportEngineDao reportEngineDao) {
+	public ReportEngineService(@Qualifier("mySqlDao") ReportEngineDao reportEngineDao) {
 		this.reportEngineDao = reportEngineDao;
 	}
 	
