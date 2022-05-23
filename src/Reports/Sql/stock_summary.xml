@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="stock_summary" name="stock_summary">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_SUMMARY">
+<![CDATA[
+	SELECT T3.TYPE_NUMBER, T3.TYPE_DESC, 
+		   ISNULL(T2.QBAGS,0)QBAGS, ISNULL(T2.QKGS,0)QKGS, ISNULL(T2.QPRICE,0)QPRICE, ISNULL(T2.QVALUE,0)QVALUE,
+		   ISNULL(T1.FBAGS,0)FBAGS, ISNULL(T1.FKGS,0)FKGS, ISNULL(T1.FVALUE,0) FVALUE,
+		   DBO.GETKGSTOBAGS(((ISNULL(T2.QBAGS,0) * 60) + ISNULL(T2.QKGS,0)) - ((ISNULL(T1.FBAGS,0) * 60) + ISNULL(T2.QKGS,0)),0) NBAGS,
+		   DBO.GETREMAININGKGS(((ISNULL(T2.QBAGS,0) * 60) + ISNULL(T2.QKGS,0)) - ((ISNULL(T1.FBAGS,0) * 60) + ISNULL(T2.QKGS,0)),0) NKGS,
+		   (ISNULL(T2.QVALUE,0) - ISNULL(T1.FVALUE,0)) NVALUE
+	FROM TYPES AS T3 
+	LEFT JOIN 
+	(SELECT T3.TYPE_NUMBER FTYPENO, T1.CONT_TYPE_CODE AS FTYPECODE, SUM(DBO.GETBAGTOTALVALUE(ISNULL(CONT_PRICE_50, 0),ISNULL(T1.CONT_BAGS_REQ, 0), 0)) FVALUE,
+		   SUM(ISNULL(T1.CONT_BAGS_REQ, 0)) FBAGS, 0 FKGS
+		 FROM CONTRACTS AS T1 
+		 LEFT JOIN NYCDATA AS T2 ON T1.CONT_PF_YEAR = T2.NYCD_YEAR 
+								AND T1.CONT_PF_MONTH = T2.NYCD_MONTH
+		 LEFT JOIN TYPES AS T3 ON T3.TYPE_CODE = T1.CONT_TYPE_CODE
+		WHERE T1.CONT_STATUS <> 'Shipped' OR T1.CONT_STATUS IS NULL
+		GROUP BY T3.TYPE_NUMBER, T1.CONT_TYPE_CODE) AS T1 ON T3.TYPE_CODE = T1.FTYPECODE
+	LEFT JOIN 
+	(SELECT T1.TYPE_NUMBER QTYPENO, T1.TYPE_CODE QTYPECODE, T1.TYPE_DESC QDESCRIPTION, (SUM(ISNULL(T2.STOCK_BAGS, 0)) + DBO.GETKGSTOBAGS(SUM(ISNULL(T2.STOCK_KGS, 0)), 0)) QBAGS, 
+	   DBO.GETREMAININGKGS(SUM(ISNULL(T2.STOCK_KGS, 0)),0) QKGS,
+	   CASE SUM(DBO.GETBAGTOTALVALUE(ISNULL(T2.STOCK_PRICE_50, 0), ISNULL(T2.STOCK_BAGS, 0), ISNULL(T2.STOCK_KGS, 0))) 
+	   WHEN 0 THEN 0
+	   ELSE ((SUM(DBO.GETBAGTOTALVALUE(ISNULL(T2.STOCK_PRICE_50, 0), ISNULL(T2.STOCK_BAGS, 0), ISNULL(T2.STOCK_KGS, 0))) * 50) / DBO.GETBAGSTOKGS(SUM(ISNULL(T2.STOCK_BAGS, 0) + DBO.GETKGSTOBAGS(ISNULL(T2.STOCK_KGS, 0), 0)), SUM(DBO.GETREMAININGKGS(ISNULL(T2.STOCK_KGS, 0), 0)), 0))
+	   END QPRICE,
+	   SUM(DBO.GETBAGTOTALVALUE(ISNULL(T2.STOCK_PRICE_50, 0), ISNULL(T2.STOCK_BAGS, 0), ISNULL(T2.STOCK_KGS, 0))) QVALUE
+	FROM TYPES AS T1 RIGHT JOIN STOCKS AS T2 ON T1.TYPE_CODE = T2.STOCK_TYPE_CODE
+	GROUP BY T1.TYPE_NUMBER, T1.TYPE_CODE, T1.TYPE_DESC) AS T2 ON T3.TYPE_CODE = T2.QTYPECODE
+	WHERE ISNULL(T2.QBAGS,0) <> 0
+	ORDER BY T3.TYPE_NUMBER
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_SUMMARY" dataType="varchar2" source="Q_SUMMARY">
+    <element name="TYPENO" dataType="varchar2" value="TYPE_NUMBER"/>
+    <element name="TYPEDESCRIPTION" dataType="varchar2" value="TYPE_DESC"/>
+    <element name="QBAGS" dataType="integer" value="QBAGS"/>
+    <element name="QKGS" dataType="integer" value="QKGS"/>
+    <element name="QPRICE" dataType="integer" value="QPRICE"/>
+    <element name="QVALUE" dataType="integer" value="QVALUE"/>
+    <element name="FBAGS" dataType="integer" value="FBAGS"/>
+    <element name="FKGS" dataType="integer" value="FKGS"/>
+    <element name="FVALUE" dataType="integer" value="FVALUE"/>
+    <element name="NBAGS" dataType="integer" value="NBAGS"/>
+    <element name="NKGS" dataType="integer" value="NKGS"/>
+    <element name="NVALUE" dataType="integer" value="NVALUE"/>
+</group>
+</dataStructure>
+</dataTemplate>

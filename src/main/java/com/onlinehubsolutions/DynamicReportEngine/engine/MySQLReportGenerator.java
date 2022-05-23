@@ -16,7 +16,7 @@ import oracle.apps.xdo.template.RTFProcessor;
 
 public class MySQLReportGenerator implements ReportGenerator{
 	// static final String DOC_PATH = "C:\\Users\\Programmer\\Desktop\\Reports\\" ;
-	static final String DOC_PATH = "src/Reports/";
+	static final String DOC_PATH = "src\\Reports\\MySql\\";
 	private String param1, param2, param3, param4, param5;
 	
 	@Override

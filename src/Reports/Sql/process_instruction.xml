@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="process_instruction" name="process_instruction">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+	<parameter name="PARAM_1" dataType="character"/>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_PROCESS">
+<![CDATA[
+	SELECT PROC_ID AS PROCESSNO, PROC_INST_DATE AS DATE, PROC_SL_ID AS STOCKNO, PROC_INST_BAGS AS BAGS, PROC_INST_PRICE AS PRICE1, PROC_BAG_MARKS AS MARKS, PROC_LIQOUR AS CUPPING,
+       PROC_INST_INSTRUCTIONS AS INSTRUCTIONS, PROC_FACT_DATE AS FACTDATE, PROC_BAGS AS STOCKBAGS, PROC_KGS AS STOCKKGS, PROC_FACT_REJ1_NUM AS REJ1, PROC_FACT_REJ2_NUM AS REJ2,
+	   PROC_FACT_PRICE AS FPRICE, PROC_FACT_CLEAN2_PRICE AS FCLEAN2PRICE, T2.TYPE_DESC AS CLEAN2TYPE, T1.TYPE_DESC AS TYPE, GRADE_NAME AS GRADE,
+	   PROC_FACT_KKK_KGS AS KKKKGS, DBO.GETKGSTOBAGS(PROC_FACT_KKK_KGS,0) AS KKKBAGS, (ISNULL(PROC_FACT_REJ1_KGS,0) + ISNULL(PROC_FACT_REJ2_KGS,0)) AS REJKGS,
+	   DBO.GETKGSTOBAGS((ISNULL(PROC_FACT_REJ1_KGS,0) + ISNULL(PROC_FACT_REJ2_KGS,0)),0) AS REJBAGS, (SELECT STOCK_PRICE_50 FROM STOCKS WHERE STOCK_SL_STOCK_ID = PROC_SL_ID) AS PRICE,
+	   (SELECT DBO.GETBAGTOTALVALUE(STOCK_PRICE_50, STOCK_BAGS, STOCK_KGS) FROM STOCKS WHERE STOCK_SL_STOCK_ID = PROC_SL_ID) AS COST,
+	   CASE PROC_INST_HP WHEN NULL THEN NULL ELSE 'HAND PICK ' END AS HANDPICK,
+	   CASE PROC_INST_GS WHEN NULL THEN NULL ELSE 'GS ' END AS GS,
+	   CASE PROC_INST_SORT WHEN NULL THEN NULL ELSE 'SORTEX ' END AS SORTEX,
+	   CASE PROC_INST_COLOR_SORT WHEN NULL THEN NULL ELSE 'COLOR SORTEX ' END AS CSORTEX,
+	   CASE PROC_INST_TRIAL WHEN NULL THEN NULL ELSE 'FIVE BAG TRIAL ' END AS FIVEBAGTRIAL,
+	   CASE PROC_INST_BLOW WHEN NULL THEN NULL ELSE 'BLOW ' END AS BLOW
+	 FROM PROCESSES
+	 LEFT JOIN TYPES AS T1 ON PROC_TYPE_CODE = T1.TYPE_CODE
+	 LEFT JOIN TYPES AS T2 ON PROC_FACT_CLEAN2_TYPE_CODE = T2.TYPE_CODE
+	 LEFT JOIN GRADES ON PROC_GRADE_CODE = GRADE_CODE
+	 WHERE PROC_ID = :PARAM_1
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_PROCESS" dataType="varchar2" source="Q_PROCESS">
+	<element name="PROCESSNO" dataType="varchar2" value="PROCESSNO"/>
+	<element name="STOCKNO" dataType="varchar2" value="STOCKNO"/>
+	<element name="DATE" dataType="varchar2" value="DATE"/>
+	<element name="MARKS" dataType="varchar2" value="MARKS"/>
+	<element name="CUPPING" dataType="varchar2" value="CUPPING"/>
+	<element name="FACTDATE" dataType="varchar2" value="FACTDATE"/>
+	<element name="INSTRUCTIONS" dataType="varchar2" value="INSTRUCTIONS"/>
+	<element name="CLEAN2TYPE" dataType="varchar2" value="CLEAN2TYPE"/>
+	<element name="TYPE" dataType="varchar2" value="TYPE"/>
+	<element name="GRADE" dataType="varchar2" value="GRADE"/>
+	<element name="HANDPICK" dataType="varchar2" value="HANDPICK"/>
+	<element name="GS" dataType="varchar2" value="GS"/>
+	<element name="SORTEX" dataType="varchar2" value="SORTEX"/>
+	<element name="CSORTEX" dataType="varchar2" value="CSORTEX"/>
+	<element name="FIVEBAGTRIAL" dataType="varchar2" value="FIVEBAGTRIAL"/>
+	<element name="BLOW" dataType="varchar2" value="BLOW"/>
+	<element name="STOCKBAGS" dataType="integer" value="STOCKBAGS"/>
+	<element name="STOCKKGS" dataType="integer" value="STOCKKGS"/>
+	<element name="REJ1" dataType="integer" value="REJ1"/>
+	<element name="REJ2" dataType="integer" value="REJ2"/>
+	<element name="BAGS" dataType="integer" value="BAGS"/>
+	<element name="PRICE" dataType="integer" value="PRICE"/>
+	<element name="PRICE1" dataType="integer" value="PRICE1"/>
+	<element name="FPRICE" dataType="integer" value="FPRICE"/>
+	<element name="FCLEAN2PRICE" dataType="integer" value="FCLEAN2PRICE"/>
+	<element name="KKKKGS" dataType="integer" value="KKKKGS"/>
+	<element name="KKKBAGS" dataType="integer" value="KKKBAGS"/>
+	<element name="REJKGS" dataType="integer" value="REJKGS"/>
+	<element name="REJBAGS" dataType="integer" value="REJBAGS"/>
+	<element name="COST" dataType="integer" value="COST"/>
+</group>
+</dataStructure>
+</dataTemplate>

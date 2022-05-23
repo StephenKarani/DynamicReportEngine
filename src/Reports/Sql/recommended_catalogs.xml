@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="recommended_catalogs" name="recommended_catalogs">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_RECOMMENDED">
+<![CDATA[
+	SELECT FORMAT(CONVERT(DATE, T1.PRE_CATALOG_DATE), 'dd/MM/yyyy') PRE_CATALOG_DATE, T1.PRE_CBKNO, T1.PRE_SOURCE_CODE, T2.SOURCE_SHT_DESC, T1.PRE_OUTTURN, T1.PRE_MARKS, T1.PRE_FARM_CODE, 
+		   T1.PRE_GRADE_ID, T3.GRADE_NAME, ISNULL(T1.PRE_BAGS,0)PRE_BAGS, ISNULL(T1.PRE_POCKETS,0)PRE_POCKETS, ISNULL(T1.PRE_WEIGHTS,0)PRE_WEIGHTS, 
+		   T1.PRE_CERTIFICATION, T1.PRE_LOCATION_ID, T4.LOCATION_NAME, T1.PRE_CUPPING, T1.PRE_COMMENTS 
+	  FROM PRE_PURCHASES AS T1
+	  LEFT JOIN SOURCE AS T2 ON T1.PRE_SOURCE_CODE = T2.SOURCE_ID
+	  LEFT JOIN GRADES AS T3 ON T1.PRE_GRADE_ID = T3.GRADE_CODE
+	  LEFT JOIN LOCATION AS T4 ON T1.PRE_LOCATION_ID = T4.LOCATION_ID
+	  WHERE T1.PRE_RECOMMENDED = 'Yes'
+		AND T1.PRE_TRANSFERRED <> 'Yes'
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_RECOMMENDED" dataType="varchar2" source="Q_RECOMMENDED">
+    <element name="CATALOGDATE" dataType="varchar2" value="PRE_CATALOG_DATE"/>
+    <element name="CBKNO" dataType="varchar2" value="PRE_CBKNO"/>
+    <element name="SCODE" dataType="integer" value="PRE_SOURCE_CODE"/>
+    <element name="SOURCE" dataType="varchar2" value="SOURCE_SHT_DESC"/>
+    <element name="OUTTURN" dataType="varchar2" value="PRE_OUTTURN"/>
+    <element name="MARKS" dataType="varchar2" value="PRE_MARKS"/>
+    <element name="FARMCODE" dataType="varchar2" value="PRE_FARM_CODE"/>
+    <element name="GCODE" dataType="integer" value="PRE_GRADE_ID"/>
+    <element name="GRADE" dataType="varchar2" value="GRADE_NAME"/>
+    <element name="BAGS" dataType="integer" value="PRE_BAGS"/>
+    <element name="POCKETS" dataType="integer" value="PRE_POCKETS"/>
+    <element name="WEIGHTS" dataType="integer" value="PRE_WEIGHTS"/>
+    <element name="CERTIFICATION" dataType="varchar2" value="PRE_CERTIFICATION"/>
+    <element name="LCODE" dataType="varchar2" value="PRE_LOCATION_ID"/>
+    <element name="LOCATION" dataType="varchar2" value="LOCATION_NAME"/>
+    <element name="CUPPING" dataType="varchar2" value="PRE_CUPPING"/>
+    <element name="COMMENTS" dataType="varchar2" value="PRE_COMMENTS"/>
+</group>
+<group name="G_LOGO" dataType="varchar2" source="Q_LOGO">
+    <element name="NAME" dataType="varchar2" value="ORG_NAME"/>
+    <element name="PHYSICAL" dataType="varchar2" value="ORG_PHYSICAL_ADDRESS"/>
+    <element name="POSTAL" dataType="varchar2" value="ORG_POSTAL_ADDRESS"/>
+    <element name="TOWN" dataType="varchar2" value="ORG_TOWN"/>
+    <element name="COUNTRY" dataType="varchar2" value="ORG_COUNTRY"/>
+    <element name="PHONE" dataType="varchar2" value="ORG_PHONE_NUMBER"/>
+    <element name="LOGO" dataType="longRaw" value="ORG_LOGO"/>
+</group>
+</dataStructure>
+</dataTemplate>

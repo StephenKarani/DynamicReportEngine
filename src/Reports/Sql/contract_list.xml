@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="contract_list" name="contract_list">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_MAIN">
+<![CDATA[
+	
+  SELECT CONT_TYPE_CODE AS TYPECODE, ISNULL(TYPE_DESC, CONT_TYPE) AS TYPE, SUM(ISNULL(CONT_BAGS_REQ,0)) AS FBAGS, 0 FKGS, SUM(DBO.GETBAGTOTALVALUE(ISNULL(CONT_PRICE_50,0), ISNULL(CONT_BAGS_REQ,0), 0)) FTOTALVALUE
+    FROM DBO.CONTRACTS
+    LEFT JOIN DBO.TYPES ON TYPES.TYPE_CODE = CONTRACTS.CONT_TYPE_CODE
+   WHERE ISNULL(CONT_STATUS,'') <> 'Shipped'
+   GROUP BY CONT_TYPE_CODE, CONT_TYPE, TYPE_DESC
+]]>
+</sqlStatement>
+<sqlStatement name="Q_DETAIL">
+<![CDATA[
+	SELECT CONT_TYPE_CODE, ISNULL(TYPE_DESC, CONT_TYPE) AS TYPE,
+		   ISNULL(CONT_BAGS_REQ,0) AS CBAGS, 0 CKGS,
+		   CONT_ID, CONT_CLIENT_CODE, ISNULL(CONT_PRICE_50,0) CONT_PRICE, CONT_SHIP_1 AS EARLIEST, CONT_SHIP_2 AS LATEST, CONT_DATE AS CONTRACTDATE, CONT_DESTINATION AS DESTINATION, 
+		   CONT_STATUS AS STATUS
+	  FROM DBO.CONTRACTS
+	  LEFT JOIN DBO.TYPES ON TYPES.TYPE_CODE = CONTRACTS.CONT_TYPE_CODE
+	  WHERE ISNULL(CONT_STATUS,'') <> 'Shipped'
+		AND CONT_TYPE_CODE = :TYPECODE
+	  ORDER BY TYPE_DESC
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_MAIN" dataType="varchar2" source="Q_MAIN">
+    <element name="TYPECODE" dataType="integer" value="TYPECODE"/>
+    <element name="TYPE" dataType="varchar2" value="TYPE"/>
+    <element name="FBAGS" dataType="integer" value="FBAGS"/>
+    <element name="FKGS" dataType="integer" value="FKGS"/>
+    <element name="FTOTALVALUE" dataType="integer" value="FTOTALVALUE"/>
+	
+	<group name="G_DETAIL" dataType="varchar2" source="Q_DETAIL">
+		<element name="TYPE" dataType="varchar2" value="TYPE"/>
+		<element name="CBAGS" dataType="integer" value="CBAGS"/>
+		<element name="CKGS" dataType="integer" value="CKGS"/>
+		<element name="CONT_ID" dataType="varchar2" value="CONT_ID"/>
+		<element name="CONT_CLIENT_CODE" dataType="varchar2" value="CONT_CLIENT_CODE"/>
+		<element name="CONT_PRICE" dataType="integer" value="CONT_PRICE"/>
+		<element name="EARLIEST" dataType="varchar2" value="EARLIEST"/>
+		<element name="LATEST" dataType="varchar2" value="LATEST"/>
+		<element name="CONTRACTDATE" dataType="varchar2" value="CONTRACTDATE"/>
+		<element name="DESTINATION" dataType="varchar2" value="DESTINATION"/>
+		<element name="STATUS" dataType="varchar2" value="STATUS"/>
+	</group>
+</group>
+</dataStructure>
+</dataTemplate>

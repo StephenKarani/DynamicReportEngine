@@ -16,6 +16,7 @@ import oracle.apps.xdo.template.RTFProcessor;
 
 public class SqlReportGenerator implements ReportGenerator{
 	static final String DOC_PATH = "C:\\Reports\\";//"\\\\10.254.20.70\\CoffeeSystem\\Reports\\";
+	//static final String DOC_PATH = "src\\Reports\\Sql\\";
 	private String param1, param2, param3, param4, param5;
 	
 	@Override

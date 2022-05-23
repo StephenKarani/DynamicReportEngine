@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataTemplate dataSourceRef="bulk_details" name="bulk_details">
+<properties>
+<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+</parameters>
+<lexicals>
+</lexicals>
+<dataQuery>
+<sqlStatement name="Q_BULK_DETAILS">
+<![CDATA[
+	SELECT BULK_ID, CONCAT(BULK_STOCK_ID_LET, ' ', BULK_STOCK_ID) AS LOTNO, GRADE_NAME, TYPE_DESC, BULK_DET_HB_BAGS, BULK_DET_HB_KGS, 
+		  BULK_DET_BAG_MARKS, BULK_DET_LIQOUR, BULK_DET_PRICE_50, 
+		  (BULK_DET_PRICE_50 / 50) * ((60 * BULK_DET_BULK_BAGS) + BULK_DET_BULK_KGS) AS VALUE, BULK_DET_NY_CLOSE,
+		  (SELECT STOCK_CBK_NUMBER FROM stocks WHERE STOCK_SL_STOCK_ID = BULK_STOCK_ID LIMIT 1) AS CBK,
+		  CASE BULK_STOCK_ID_LET
+		  WHEN 'S' THEN (SELECT PURCHASE_NO FROM stocks LEFT JOIN purchases ON STOCK_PURCHASE_ID = PURCHASE_ID WHERE STOCK_SL_STOCK_ID = BULK_STOCK_ID)
+		  ELSE ''
+		  END AS SALE,
+          WH_DESC, BIN_NAME
+	 FROM bulk_details 
+	 LEFT JOIN types ON bulk_details.BULK_DET_TYPE_CODE = types.TYPE_CODE
+	 LEFT JOIN grades ON bulk_details.BULK_DET_GRADE_CODE = grades.GRADE_CODE
+	 LEFT JOIN warehouse ON bulk_details.BULK_WAREHOUSE_ID = warehouse.WH_ID
+	 LEFT JOIN bin ON bulk_details.BULK_BIN_ID = bin.BIN_ID
+	 ORDER BY BULK_ID, BULK_STOCK_ID
+]]>
+</sqlStatement>
+</dataQuery>
+<dataStructure>
+<group name="G_BULK_DETAILS" dataType="varchar2" source="Q_BULK_DETAILS">
+		<element name="BULKID" dataType="varchar2" value="BULK_ID"/>
+		<element name="LOTNO" dataType="varchar2" value="LOTNO"/>
+		<element name="GRADE" dataType="varchar2" value="GRADE_NAME"/>
+		<element name="SALE" dataType="varchar2" value="SALE"/>
+		<element name="CBK" dataType="varchar2" value="CBK"/>
+		<element name="TYPE" dataType="varchar2" value="TYPE_DESC"/>
+		<element name="BAGS" dataType="integer" value="BULK_DET_HB_BAGS"/>
+		<element name="KGS" dataType="integer" value="BULK_DET_HB_KGS"/>
+		<element name="MARKS" dataType="varchar2" value="BULK_DET_BAG_MARKS"/>
+		<element name="CUPPING" dataType="varchar2" value="BULK_DET_LIQOUR"/>
+		<element name="COMMENTS" dataType="varchar2" value="BULK_DET_COMMENTS"/>
+		<element name="PRICE" dataType="integer" value="BULK_DET_PRICE_50"/>
+		<element name="VALUE" dataType="integer" value="VALUE"/>
+		<element name="NYCLOSE" dataType="integer" value="BULK_DET_NY_CLOSE"/>
+		<element name="WAREHOUSE" dataType="varchar2" value="WH_DESC"/>
+		<element name="BIN" dataType="varchar2" value="BIN_NAME"/>
+</group>
+</dataStructure>
+</dataTemplate>
